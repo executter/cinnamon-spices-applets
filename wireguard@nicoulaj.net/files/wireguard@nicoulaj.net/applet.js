@@ -191,22 +191,22 @@ const WireGuardApplet = class WireGuardApplet extends Applet.IconApplet {
 
         this._menu.removeAll();
 
-        let active_ifaces = 0;
+        const active_ifaces = [];
 
         for (let i = 0; i < this._wg_interfaces.length; i++) {
             const iface = this._wg_interfaces[i];
 
             const enabled = this._net_interfaces.includes(iface);
             if (enabled)
-                active_ifaces++;
+                active_ifaces.push(iface);
 
             const item = new PopupMenu.PopupSwitchMenuItem(iface, enabled);
             item.connect('toggled', (object, value) => this.on_item_toggled(iface, object, value));
             this._menu.addMenuItem(item);
         }
 
-        this.set_applet_icon_name(active_ifaces > 0 ? "on" : "off");
-        this.set_applet_tooltip(_("WireGuard"));
+        this.set_applet_icon_name(active_ifaces.length > 0 ? "on" : "off");
+        this.set_applet_tooltip([_("WireGuard"), ...active_ifaces].join("\n"));
     }
 
     _handle_error(msg, details = null, fatal = true) {
